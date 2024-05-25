@@ -39,7 +39,7 @@ jobs:
         Get-ChildItem -Path .
     
         # Run Allure command
-        .\bin\allure --version
+        .\allure-2.29.0\bin\allure --version
 
 
 
