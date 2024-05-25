@@ -26,9 +26,9 @@ jobs:
     - name: Change directory and run tests
       run: |
         cd test_runners
-        if exist test_runner.bat (
-          test_runner.bat "features/feature1.feature" @Test1
-        ) else (
-          echo "test_runner.bat not found."
+        if (Test-Path "test_runner.bat") {
+          .\test_runner.bat "features/feature1.feature" @Test1
+        } else {
+          Write-Host "test_runner.bat not found."
           exit 1
-        )
+        }
