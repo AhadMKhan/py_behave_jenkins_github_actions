@@ -84,11 +84,11 @@ jobs:
         }
         cd test-results
         Write-Output "Routed to test-results\n"
+        Get-ChildItem -Path .
         cd allure-report-json
         Write-Output "Routed to Allure Reports Json\n"
         Get-ChildItem -Path .
         cd ..
-        Write-Output "Routed to test-results\n"
         cd allure-report
         Write-Output "Routed to Allure Report\n"
         Get-ChildItem -Path .
