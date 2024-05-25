@@ -9,5 +9,4 @@ if exist "test-results\allure-report\index.html" (
 )
 
 REM Prompt user to press any key before exiting
-cd test_runners
 echo Allure report generation completed. Press any key to exit.
