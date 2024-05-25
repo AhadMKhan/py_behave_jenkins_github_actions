@@ -19,6 +19,9 @@ def test_runner_setup():
     # Import necessary functions from dir_configurations.setup_directories
     from dir_configurations.setup_directories import setup_directories, validate_feature_paths, cleanup, find_base_dir
 
+    # Get the current directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
     # Argument parser for command-line arguments
     parser = argparse.ArgumentParser(description='Run Behave tests with optional feature file paths and tags.')
     parser.add_argument('params', type=str, nargs='*', help='Feature file paths and/or tags.')
@@ -38,8 +41,8 @@ def test_runner_setup():
     if not feature_paths:
         feature_paths.append('features')
 
-    # Define base paths
-    base_dir = find_base_dir()
+    # Define base path using the current directory
+    base_dir = find_base_dir(current_dir)
     util_factory_dir = os.path.join(base_dir, 'Util_Factory')
     steps_dir = os.path.join(base_dir, 'steps')
 
