@@ -35,11 +35,12 @@ jobs:
     
     - name: Run Allure Command
       run: |
-        # Change directory to where Allure CLI is located
-        Set-Location -Path '.\allure\bin'
+        # List contents of current directory for debugging
+        Get-ChildItem -Path .
     
         # Run Allure command
-        .\allure --version
+        .\bin\allure --version
+
 
 
 
