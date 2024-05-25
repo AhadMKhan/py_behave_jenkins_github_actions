@@ -22,7 +22,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        choco install allure
+        # Download and extract Allure CLI from GitHub releases
+        curl -o allure.zip -Ls https://github.com/allure-framework/allure-core/releases/latest/download/allure-commandline.zip
+        7z x allure.zip -oallure
+        rm allure.zip
+        # Add Allure CLI directory to PATH
+        echo "::add-path::$(pwd)/allure"
 
     - name: Change directory and run tests
       run: |
