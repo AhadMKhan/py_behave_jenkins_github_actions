@@ -57,3 +57,5 @@ jobs:
           Write-Host "test_runner_pipeline.bat not found."
           exit 1
         }
+        # List contents of current directory for debugging
+        Get-ChildItem -Path .
