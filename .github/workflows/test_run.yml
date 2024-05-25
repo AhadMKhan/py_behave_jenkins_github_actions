@@ -34,7 +34,13 @@ jobs:
         Remove-Item -Path 'allure_temp' -Recurse
     
     - name: Run Allure Command
-      run: .\allure\bin\allure --version
+      run: |
+        # Change directory to where Allure CLI is located
+        Set-Location -Path '.\allure\bin'
+    
+        # Run Allure command
+        .\allure --version
+
 
 
     # - name: Install dependencies
