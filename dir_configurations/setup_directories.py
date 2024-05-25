@@ -9,24 +9,40 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def find_base_dir() -> str:
-    """
-    Finds the base directory of the project by traversing upwards from the current directory.
-    Returns the outermost directory with no parent directory.
-    """
-    try:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-    except NameError:
-        raise FileNotFoundError("The __file__ attribute is not available. Cannot determine the base directory.")
+# def find_base_dir() -> str:
+#     """
+#     Finds the base directory of the project by searching for a marker file.
+#     Returns the outermost directory with the marker file.
+#     """
+#     current_dir = os.path.abspath(__file__)  # Get the current script file
+#     logger.info("Checking Current directory: %s", current_dir)
+#
+#     while True:
+#         marker_file_path = os.path.join(current_dir, 'recquirements.txt')
+#         if os.path.exists(marker_file_path):
+#             return current_dir  # Return the directory containing the marker file
+#         parent_dir = os.path.dirname(current_dir)
+#         if parent_dir == current_dir:
+#             raise FileNotFoundError("Project base directory not found.")
+#         current_dir = parent_dir
+#         logger.info("Set to Base directory: %s", current_dir)
 
+def find_base_dir(current_dir: str) -> str:
+    """
+    Finds the base directory of the project by searching for a marker file.
+    Returns the outermost directory with the marker file.
+    """
     logger.info("Checking Current directory: %s", current_dir)
 
     while True:
+        marker_file_path = os.path.join(current_dir, 'requirements.txt')
+        logger.info("Checking directory: %s", current_dir)
+        if os.path.exists(marker_file_path):
+            logger.info("Found marker file in directory: %s", current_dir)
+            return current_dir  # Return the directory containing the marker file
         parent_dir = os.path.dirname(current_dir)
         if parent_dir == current_dir:
             raise FileNotFoundError("Project base directory not found.")
-        if os.path.basename(parent_dir) == '':
-            return current_dir  # Return the outermost directory
         current_dir = parent_dir
         logger.info("Set to Base directory: %s", current_dir)
 
@@ -88,7 +104,6 @@ def cleanup(temporary_environment_file: str, temporary_steps_dir: str) -> None:
             shutil.rmtree(temporary_steps_dir)
     except IOError as e:
         logger.error("Error during cleanup: %s", e)
-
 
 # Example usage of functions (uncomment to use in a script)
 # base_dir = find_base_dir()
