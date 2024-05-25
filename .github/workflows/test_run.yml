@@ -22,12 +22,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        # Download and extract Allure CLI from GitHub releases
-        curl -o allure.zip -Ls https://github.com/allure-framework/allure-core/releases/latest/download/allure-commandline.zip
-        Expand-Archive -Path allure.zip -DestinationPath allure_temp
-        Move-Item -Path allure_temp\* -Destination .\ -Force
-        Remove-Item -Path allure.zip
-        Remove-Item -Path allure_temp -Recurse
+        # Download Allure CLI
+        Invoke-WebRequest -Uri 'https://github.com/allure-framework/allure-core/releases/latest/download/allure-commandline.zip' -OutFile 'allure.zip'
+        
+        # Extract Allure CLI
+        Expand-Archive -Path 'allure.zip' -DestinationPath 'allure_temp'
+        
+        # Move Allure CLI files to appropriate directory
+        Move-Item -Path 'allure_temp\*' -Destination '.\' -Force
+    
+        # Cleanup: Remove downloaded zip file and temporary directory
+        Remove-Item -Path 'allure.zip'
+        Remove-Item -Path 'allure_temp' -Recurse
 
     - name: Change directory and run tests
       run: |
