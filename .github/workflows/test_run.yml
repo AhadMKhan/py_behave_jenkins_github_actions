@@ -70,9 +70,19 @@ jobs:
       run: |
         # List contents of current directory for debugging
         Get-ChildItem -Path .
-
-        if exist "test-results\allure-report\index.html" (
-        ren "test-results\allure-report\index.html" "Automation Test Execution Report.html"
-        )
     
-        echo Allure report generation completed. Press any key to exit.
+        # Check if the index.html file exists in the allure-report directory
+        if Test-Path "test-results\allure-report\index.html" {
+          # Rename the index.html file to "Automation Test Execution Report.html"
+          Rename-Item -Path "test-results\allure-report\index.html" -NewName "Automation Test Execution Report.html" -ErrorAction Stop
+    
+          # Output a message indicating successful renaming
+          Write-Output "Allure report successfully renamed."
+        } else {
+          # Output an error message if the index.html file doesn't exist
+          Write-Error "The index.html file does not exist in the allure-report directory."
+        }
+        cd test-results
+        cd allure-report
+        Get-ChildItem -Path .
+
