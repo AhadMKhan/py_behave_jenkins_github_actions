@@ -33,6 +33,10 @@ jobs:
         Remove-Item -Path 'allure.zip'
         Remove-Item -Path 'allure_temp' -Recurse
 
+    - name: Add Allure CLI to PATH
+      run: |
+        $env:PATH += ";$(Get-Location)"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
