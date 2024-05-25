@@ -62,11 +62,8 @@ jobs:
 
     - name: Generate Allure Report
       run: |
-        cd ..
         # List contents of current directory for debugging
         Get-ChildItem -Path .
-
-        REM Generate the HTML report
         .\allure-2.29.0\bin\allure generate test-results/allure-report-json/ -o test-results/allure-report/ --report-name "Test Result" --clean
 
     - name: Rename Allure Report
@@ -78,5 +75,4 @@ jobs:
         ren "test-results\allure-report\index.html" "Automation Test Execution Report.html"
         )
     
-        REM Prompt user to press any key before exiting
         echo Allure report generation completed. Press any key to exit.
