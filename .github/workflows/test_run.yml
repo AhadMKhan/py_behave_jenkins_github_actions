@@ -23,8 +23,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         # Download Allure CLI
-        Invoke-WebRequest -Uri 'https://github.com/allure-framework/allure-core/releases/latest/download/allure-commandline.zip' -OutFile 'allure.zip'
-        
+        $latestReleaseUrl = 'https://github.com/allure-framework/allure2/releases/latest'
+        $latestReleasePage = Invoke-WebRequest -Uri $latestReleaseUrl
+        $downloadLink = $latestReleasePage.Links | Where-Object { $_.href -like '*allure-commandline.zip' } | Select-Object -ExpandProperty href
+        Invoke-WebRequest -Uri $downloadLink -OutFile 'allure.zip'
         # Extract Allure CLI
         Expand-Archive -Path 'allure.zip' -DestinationPath 'allure_temp'
         
