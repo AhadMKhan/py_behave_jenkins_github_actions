@@ -24,9 +24,10 @@ jobs:
         pip install -r requirements.txt
         # Download and extract Allure CLI from GitHub releases
         curl -o allure.zip -Ls https://github.com/allure-framework/allure-core/releases/latest/download/allure-commandline.zip
-        7z x allure.zip -oallure_temp
-        mv allure_temp/* allure_temp/.??* .  # Move all files including hidden files
-        rm -rf allure_temp allure.zip
+        Expand-Archive -Path allure.zip -DestinationPath allure_temp
+        Move-Item -Path allure_temp\* -Destination .\ -Force
+        Remove-Item -Path allure.zip
+        Remove-Item -Path allure_temp -Recurse
 
     - name: Change directory and run tests
       run: |
