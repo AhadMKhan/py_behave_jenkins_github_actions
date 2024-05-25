@@ -15,6 +15,8 @@ if "%ARGS%"=="" (
     python test_runner_setup.py %ARGS%
 )
 
-REM Generate the HTML report
+REM Navigate back to the previous directory
 cd ..
+
+REM Generate the HTML report
 .\allure-2.29.0\bin\allure generate test-results/allure-report-json/ -o test-results/allure-report/ --report-name "cTest Result" --clean
