@@ -1,0 +1,40 @@
+Feature: Logged Feature # features/feature1.feature:1
+
+  @Test1
+  Scenario Outline: 2.1 with valid credentials -- @1.1                # features/feature1.feature:10
+    Given I am on the login page                                      # features/steps/common_steps.py:7
+    When I enter username "standard_user" and password "secret_sauce" # features/steps/common_steps.py:13
+    And I click the login button                                      # features/steps/common_steps.py:18
+
+  @Test2
+  Scenario Outline: 2.2 login with valid credentials -- @1.1          # features/feature1.feature:19
+    Given I am on the login page                                      # features/steps/common_steps.py:7
+    When I enter username "standard_user" and password "secret_sauce" # features/steps/common_steps.py:13
+    And I click the login button                                      # features/steps/common_steps.py:18
+
+  @Test2
+  Scenario Outline: 2.2 login with valid credentials -- @1.2   # features/feature1.feature:20
+    Given I am on the login page                               # features/steps/common_steps.py:7
+    When I enter username "test" and password "test"           # features/steps/common_steps.py:13
+    And I click the login button                               # features/steps/common_steps.py:18
+
+Feature: Login Feature # features/feature2.feature:1
+
+  @Test1
+  Scenario Outline: 1.1 login with valid credentials -- @1.1          # features/feature2.feature:10
+    Given I am on the login page                                      # features/steps/common_steps.py:7
+    When I enter username "standard_user" and password "secret_sauce" # features/steps/common_steps.py:13
+    And I click the login button                                      # features/steps/common_steps.py:18
+
+  @Test2
+  Scenario Outline: 1.2 login with valid credentials -- @1.1          # features/feature2.feature:19
+    Given I am on the login page                                      # features/steps/common_steps.py:7
+    When I enter username "standard_user" and password "secret_sauce" # features/steps/common_steps.py:13
+    And I click the login button                                      # features/steps/common_steps.py:18
+
+  @Test2
+  Scenario Outline: 1.2 login with valid credentials -- @1.2   # features/feature2.feature:20
+    Given I am on the login page                               # features/steps/common_steps.py:7
+    When I enter username "test" and password "test"           # features/steps/common_steps.py:13
+    And I click the login button                               # features/steps/common_steps.py:18
+
