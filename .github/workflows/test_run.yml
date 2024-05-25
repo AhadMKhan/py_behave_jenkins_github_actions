@@ -52,7 +52,7 @@ jobs:
       run: |
         cd test_runners
         if (Test-Path "test_runner_pipeline.bat") {
-          .\test_runner.bat "features/feature1.feature" @Test1
+          .\test_runner.bat "features/feature1.feature" "@Test1"
         } else {
           Write-Host "test_runner_pipeline.bat not found."
           exit 1
@@ -72,7 +72,7 @@ jobs:
         Get-ChildItem -Path .
     
         # Check if the index.html file exists in the allure-report directory
-        if Test-Path "test-results\allure-report\index.html" {
+        if (Test-Path test-results\allure-report\index.html) {
           # Rename the index.html file to "Automation Test Execution Report.html"
           Rename-Item -Path "test-results\allure-report\index.html" -NewName "Automation Test Execution Report.html" -ErrorAction Stop
     
