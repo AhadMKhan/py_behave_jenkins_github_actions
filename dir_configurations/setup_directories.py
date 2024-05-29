@@ -32,13 +32,13 @@ def find_base_dir(current_dir: str) -> str:
     Finds the base directory of the project by searching for a marker file.
     Returns the outermost directory with the marker file.
     """
-    logger.info("Checking Current directory: %s", current_dir)
+    # logger.info("Checking Current directory: %s", current_dir)
 
     while True:
         marker_file_path = os.path.join(current_dir, 'requirements.txt')
-        logger.info("Checking directory: %s", current_dir)
+        # logger.info("Checking directory: %s", current_dir)
         if os.path.exists(marker_file_path):
-            logger.info("Found marker file in directory: %s", current_dir)
+            # logger.info("Found marker file in directory: %s", current_dir)
             return current_dir  # Return the directory containing the marker file
         parent_dir = os.path.dirname(current_dir)
         if parent_dir == current_dir:

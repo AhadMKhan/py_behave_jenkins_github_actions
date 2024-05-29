@@ -1,0 +1,15 @@
+{
+  "some": "test123",
+"test" :{
+    "property": {
+      "to": {
+        "access": "This is the value you want to access."
+      }
+    },
+    "another_property": {
+      "to": {
+        "access": "This is another value."
+      }
+    }
+  }
+}

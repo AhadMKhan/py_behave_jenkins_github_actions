@@ -1,0 +1,5 @@
+browser: "chrome"
+headless: false
+parallel: true
+parallel_enabled: true
+num_threads: 4

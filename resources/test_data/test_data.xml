@@ -1,0 +1,4 @@
+<root>
+    <some>This is the value you want to access.</some>
+    <access>This is another value.</access>
+</root>
