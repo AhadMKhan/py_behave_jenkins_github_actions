@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Add parent directory to sys.path
 
 from dir_configurations.setup_directories import setup_directories, validate_feature_paths, cleanup, find_base_dir
-from Util_Factory.readers import get_yaml_property
+from Util_Factory.file_readers import get_yaml_property
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -70,7 +70,7 @@ def test_runner_setup():
     os.environ['PYTHONPATH'] = f"{base_dir}{os.pathsep}{util_factory_dir}{os.pathsep}{steps_dir}"
 
     # Read parallel property from env.yaml
-    environment_file_path = "../configuration/environment_config.yaml"
+    environment_file_path = "../configuration/env_config.yaml"
     parallel = get_yaml_property(environment_file_path, "parallel")
     if parallel is None:
         parallel = False  # Set default value if not provided

@@ -1,4 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
 <root>
-    <some>This is the value you want to access.</some>
+    <some>This is the value you want to access.
+        <test>testing1</test>
+        <test1>testing 2</test1>
+    </some>
     <access>This is another value.</access>
-</root>
+<root/some/test>new_value</root/some/test></root>

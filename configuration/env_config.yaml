@@ -1,0 +1,11 @@
+browser: chrome
+headless: false
+retries:
+  element: 5
+  polling_interval: 2
+test:
+  level: firefox
+test2: firefox
+timeout:
+  element: 60
+  global: 60

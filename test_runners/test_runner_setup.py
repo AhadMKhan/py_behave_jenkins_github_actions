@@ -17,7 +17,7 @@ def test_runner_setup():
     sys.path.append(parent_dir)
 
     # Import necessary functions from dir_configurations.setup_directories
-    from dir_configurations.setup_directories import setup_directories, validate_feature_paths, cleanup, find_base_dir
+    from dir_configurations.setup_directories import SetupDirectories
 
     # Get the current directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -42,15 +42,15 @@ def test_runner_setup():
         feature_paths.append('features')
 
     # Define base path using the current directory
-    base_dir = find_base_dir(current_dir)
+    base_dir = SetupDirectories.find_base_dir(current_dir)
     util_factory_dir = os.path.join(base_dir, 'Util_Factory')
     steps_dir = os.path.join(base_dir, 'steps')
 
     # Validate feature paths
-    validate_feature_paths(feature_paths, base_dir)
+    SetupDirectories.validate_feature_paths(feature_paths, base_dir)
 
     # Setup directories
-    temporary_environment_file, temporary_steps_dir = setup_directories(base_dir, util_factory_dir, steps_dir)
+    temporary_environment_file, temporary_steps_dir = SetupDirectories.setup_directories(base_dir, util_factory_dir, steps_dir)
 
     os.environ['PYTHONPATH'] = f"{base_dir}{os.pathsep}{util_factory_dir}{os.pathsep}{steps_dir}"
 
@@ -71,7 +71,7 @@ def test_runner_setup():
     result = subprocess.run(behave_command, cwd=base_dir)
 
     # Clean up temporary files
-    cleanup(temporary_environment_file, temporary_steps_dir)
+    SetupDirectories.cleanup(temporary_environment_file, temporary_steps_dir)
 
     # Exit with the same code as the Behave command
     sys.exit(result.returncode)

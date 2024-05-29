@@ -8,11 +8,17 @@ cd test_runners
 REM Check if any arguments are provided
 set "ARGS=%*"
 if "%ARGS%"=="" (
+    REM Get the directory of the current script
+    set "SCRIPT_DIR=%~dp0"
+
+    REM Debugging: Print the resolved base directory and script paths
+    echo SCRIPT_DIR=%SCRIPT_DIR%
+
     REM No arguments provided, run Behave with default options
-    python test_runner_setup.py
+    python "%SCRIPT_DIR%\test_runner_setup.py"
 ) else (
     REM Arguments provided, pass them to run_behave.py
-    python test_runner_setup.py %ARGS%
+    python "%SCRIPT_DIR%\test_runner_setup.py" %ARGS%
 )
 
 REM Generate the HTML report
