@@ -1,5 +1,5 @@
 browser: chrome
-headless: false
+headless: true
 retries:
   element: 5
   polling_interval: 2
