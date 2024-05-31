@@ -1,3 +1,6 @@
+import json
+import os
+
 import requests
 
 from Util_Factory.file_readers import FileReaders
@@ -32,36 +35,18 @@ class APIFactory:
             json_data = file.read()
         return json_data.encode()
 
-# print(APIFactory.get_request_json_file("put_request"))
+    @staticmethod
+    def save_response_json(response, filename):
+        directory = "./resources/api/response_body/"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
-# import requests
-#
-#
-# class APIFactory:
-#     def __init__(self, url):
-#         self.url = url
-#         self.response = None
-#
-#     def send_request(self, method, payload=None):
-#         method = method.upper()
-#         headers = {"Content-Type": "application/json"}
-#
-#         if method == "GET":
-#             self.response = requests.get(self.url, headers=headers)
-#         elif method == "POST":
-#             self.response = requests.post(self.url, headers=headers, data=payload)
-#         elif method == "PUT":
-#             self.response = requests.put(self.url, headers=headers, data=payload)
-#         elif method == "DELETE":
-#             self.response = requests.delete(self.url, headers=headers)
-#         elif method == "PATCH":
-#             self.response = requests.patch(self.url, headers=headers, data=payload)
-#         else:
-#             raise ValueError(f"Unsupported HTTP method: {method}")
-#
-#         return self.response
-#
-#     def get_status_code(self):
-#         if self.response:
-#             return self.response.status_code
-#         return None
+        try:
+            json_data = response.json()
+            status_code = response.status_code
+            filepath = os.path.join(directory, filename)
+            with open(filepath, "w") as f:
+                json.dump({"status_code": status_code, "data": json_data}, f, indent=4)
+            print(f"Response JSON saved to: {filepath}")
+        except ValueError:
+            print("Response content is not valid JSON.")

@@ -1,4 +1,3 @@
-from Util_Factory import constant_variables
 from Util_Factory.file_readers import FileReaders
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait

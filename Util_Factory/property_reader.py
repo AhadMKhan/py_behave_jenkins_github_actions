@@ -21,3 +21,12 @@ class PropertyReader:
     @staticmethod
     def get_configuration_property(config_file_path, get_property):
         return FileReaders.get_yaml_property("./configuration/" + config_file_path + ".yaml", get_property)
+
+    @staticmethod
+    def get_sql_query_property(get_sql_query_property, sql_queries_file_path):
+        sql_queries_file_path = UtilityFactory.get_property_file_name(sql_queries_file_path).lower()
+        get_sql_query_property = UtilityFactory.make_property_name(get_sql_query_property)
+        return FileReaders.get_properties_property(get_sql_query_property,
+                                                   "./resources/sql/queries/" + sql_queries_file_path + ".properties")
+
+# print(PropertyReader.get_sql_query_property("query ", "sql "))

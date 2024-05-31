@@ -63,8 +63,8 @@ class FileReaders:
         data = FileReaders.read_file(file_path, file_type)
         if data:
             property_value = FileReaders.get_property(data, property_path, file_type)
-            if property_value is not None:
-                logging.info(f"Value of '{property_path}': {property_value}")
+            # if property_value is not None:
+            # logging.info(f"Value of '{property_path}': {property_value}")
             return property_value
         return None
 
@@ -84,6 +84,22 @@ class FileReaders:
     def get_properties_property(property_path, file_path):
         return FileReaders.read_property(file_path, property_path, PROPERTIES_TYPE)
 
+    @staticmethod
+    def get_properties_properties(file_path, *property_paths):
+        if isinstance(property_paths, str):
+            property_paths = [property_paths]
+
+        properties_values = {}
+        for property_path in property_paths:
+            value = FileReaders.read_property(file_path, property_path, PROPERTIES_TYPE)
+            if value is not None:
+                properties_values[property_path] = value
+
+        if len(properties_values) == 1:
+            return next(iter(properties_values.values()))
+        else:
+            return properties_values
+
 # Example usage:
 # Reading JSON file
 # json_file_path = '../resources/locators/locators.json'
@@ -100,11 +116,11 @@ class FileReaders:
 # yaml_property_path = 'browser'
 # print(FileReaders.get_yaml_property(yaml_file_path, yaml_property_path))
 #
-# # Reading properties file
-# properties_file_path = '../resources/locators/login_page.properties'
-# properties_property_path = 'Login.Btn'
-# print(FileReaders.get_properties_property(properties_file_path, properties_property_path))
-#
+# Reading properties file
+# properties_file_path = '../resources/sql_queries/sql.properties'
+# properties_property_path = 'query'
+# print(FileReaders.get_properties_property(properties_property_path, properties_file_path))
+# #
 # properties_file_path = '../resources/locators/login_page.properties'
 # properties_property_path = 'Login_Btn'
 # print(FileReaders.get_properties_property(properties_file_path, properties_property_path))
