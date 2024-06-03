@@ -5,6 +5,9 @@ import logging
 
 from Util_Factory.file_readers import FileReaders
 
+logging.basicConfig(level=logging.INFO)
+
+
 class DatabaseFactory:
     DATABASE_NAME = "test.db"
     logger = logging.getLogger(__name__)
@@ -85,11 +88,33 @@ class DatabaseFactory:
 
     @staticmethod
     def set_query_parameter(sql_query, properties_file_path=None, *query_params):
-        if not properties_file_path or properties_file_path.strip().lower() in {"null", "", " "}:
-            str_params = tuple(param for param in query_params if isinstance(param, str) and param.strip())
+        if not properties_file_path or properties_file_path.strip().lower() in {"none", "null", "", " "}:
+            if query_params and isinstance(query_params[0], list):
+                str_params = tuple(
+                    param for sublist in query_params for param in sublist if isinstance(param, str) and param.strip())
+            else:
+                str_params = tuple(param for param in query_params if isinstance(param, str) and param.strip())
+            # logging.info("String parameters: %s", str_params)
+            if "null" in [param.lower() for param in str_params]:
+                # logging.info("Null parameters provided, returning original query.")
+                return sql_query
+            if "none" in [param.lower() for param in str_params]:
+                # logging.info("None parameters provided, returning original query.")
+                return sql_query
             return sql_query % str_params if str_params else sql_query
         else:
-            param_values = DatabaseFactory._fetch_param_values_from_properties(query_params, properties_file_path)
+            try:
+                param_values = DatabaseFactory._fetch_param_values_from_properties(query_params, properties_file_path)
+            except FileNotFoundError:
+                logging.error("Properties file not found. Returning original query.")
+                return sql_query
+            if "null" in [param.lower() for param in param_values]:
+                # logging.info("Null parameters provided, returning original query.")
+                return sql_query
+            if "none" in [param.lower() for param in param_values]:
+                # logging.info("None parameters provided, returning original query.")
+                return sql_query
+            # logging.info("Parameter values from properties file: %s", param_values)
             return sql_query % tuple(param_values)
 
     @staticmethod

@@ -64,7 +64,7 @@ class FileReaders:
         if data:
             property_value = FileReaders.get_property(data, property_path, file_type)
             # if property_value is not None:
-            # logging.info(f"Value of '{property_path}': {property_value}")
+            #     logging.info(f"Value of '{property_path}': {property_value}")
             return property_value
         return None
 

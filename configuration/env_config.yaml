@@ -1,5 +1,8 @@
-browser: chrome
-headless: true
+browser:
+  os: windows
+  type: chrome
+  headless: false
+  incognito: true
 retries:
   element: 5
   polling_interval: 2

@@ -27,28 +27,42 @@ def step_when_insert_user(context, name, email):
 def step_store_parameters(context, query_parameters, properties_file_path):
     context.properties_file_path = properties_file_path
     context.query_parameters = DatabaseFactory.handle_query_parameters(query_parameters)
+    logging.info(f"Query parameters: {context.query_parameters}")
+    logging.info(f"Properties file path: {context.properties_file_path}")
 
 
-@then(
-    'User Run Query "{sql_query}" from "{sql_query_file_path}" and save the results to "{'
-    'sql_query_result_saving_file_path}" with key "{sql_query_result_saving_key}"')
-def step_run_query_and_save(context, sql_query, sql_query_file_path, sql_query_result_saving_file_path,
-                            sql_query_result_saving_key):
+@then('User Run Query "{sql_query}" from "{sql_query_file_path}" File')
+def step_run_query_and_save(context, sql_query, sql_query_file_path):
     # Read the query from the properties file
     sql_query = PropertyReader.get_sql_query_property(sql_query, sql_query_file_path)
+    logging.info(f"SQL query from file: {sql_query}")
 
     # Format the result saving key
-    sql_query_result_saving_key = UtilityFactory.make_property_name(sql_query_result_saving_key)
+    # sql_query_result_saving_key = UtilityFactory.make_property_name(sql_query_result_saving_key)
 
     # Process the query parameters if they exist
     query_parameters = getattr(context, 'query_parameters', None)
     properties_file_path = getattr(context, 'properties_file_path', None)
     sql_query = DatabaseFactory.set_query_parameter(sql_query, properties_file_path, query_parameters)
+    logging.info(f"Formatted SQL query with parameters: {sql_query}")
+
+
 
     # Run the provided SQL query
-    results = DatabaseFactory.run_query(sql_query)
+    context.results = DatabaseFactory.run_query(sql_query)
+    logging.info(f"Query results: {context.results}")
 
-    logging.info(results)
+
+    # logging.info(context.results)
+    #
+    # # Save the results to a properties file with the specified path and main key
+    # DatabaseFactory.save_results_to_properties(sql_query_result_saving_key, results, sql_query_result_saving_file_path)
+
+
+@then('User Save Query Results as "{sql_query_result_saving_key}" to "{sql_query_result_saving_file_path}" File')
+def step_run_query_and_save(context, sql_query_result_saving_key, sql_query_result_saving_file_path):
+    sql_query_result_saving_key = UtilityFactory.make_property_name(sql_query_result_saving_key)
+
 
     # Save the results to a properties file with the specified path and main key
-    DatabaseFactory.save_results_to_properties(sql_query_result_saving_key, results, sql_query_result_saving_file_path)
+    DatabaseFactory.save_results_to_properties(sql_query_result_saving_key, context.results, sql_query_result_saving_file_path)
