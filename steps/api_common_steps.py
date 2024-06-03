@@ -1,6 +1,4 @@
-import json
-
-from behave import given, when, then
+from behave import given, when, then  # pylint: disable=no-name-in-module
 from base_factory.api_factory import APIFactory
 
 
@@ -18,12 +16,12 @@ def step_given_i_have_the_payload(context, json_file_name):
 
 @when('I send a "{method}" request to the endpoint')
 def step_when_i_send_a_request_to_the_endpoint(context, method):
-    context.response = context.api_factory.send_request(method,
-                                                        payload=context.payload if hasattr(context,
-                                                                                           'payload') else None)
+    context.response = context.api_factory.send_request(
+        method, payload=context.payload if hasattr(context, "payload") else None
+    )
 
     # Save response JSON to a directory if json_file_name exists in the context
-    if hasattr(context, 'json_file_name'):
+    if hasattr(context, "json_file_name"):
         filename = context.json_file_name + ".json"
     else:
         # Generate a filename based on the request method
@@ -31,13 +29,13 @@ def step_when_i_send_a_request_to_the_endpoint(context, method):
 
     try:
         context.api_factory.save_response_json(context.response, filename)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0718
         print(f"Failed to save response JSON: {e}")
 
 
-@then('the status code should be {expected_status_code:d}')
+@then("the status code should be {expected_status_code:d}")
 def step_then_the_status_code_should_be(context, expected_status_code):
     actual_status_code = context.api_factory.get_status_code(context.response)
-    assert actual_status_code == expected_status_code, (
-        f"Expected status code {expected_status_code}, but got {actual_status_code}"
-    )
+    assert (
+        actual_status_code == expected_status_code
+    ), f"Expected status code {expected_status_code}, but got {actual_status_code}"

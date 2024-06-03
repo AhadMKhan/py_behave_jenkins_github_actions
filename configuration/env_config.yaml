@@ -12,3 +12,4 @@ test2: firefox
 timeout:
   element: 60
   global: 60
+  request: 60

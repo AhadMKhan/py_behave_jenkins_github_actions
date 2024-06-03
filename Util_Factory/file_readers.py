@@ -1,44 +1,46 @@
 import json
 import xml.etree.ElementTree as ET
-import yaml
 import logging
+import yaml
 
 # Constants
-JSON_TYPE = 'json'
-XML_TYPE = 'xml'
-YAML_TYPE = 'yaml'
-PROPERTIES_TYPE = 'properties'
+JSON_TYPE = "json"
+XML_TYPE = "xml"
+YAML_TYPE = "yaml"
+PROPERTIES_TYPE = "properties"
 
 
 class FileReaders:
+
+    # pylint: disable=R1705, W0718, R0911
     @staticmethod
     def read_file(file_path, file_type):
         try:
             if file_type == JSON_TYPE:
-                with open(file_path, 'r') as file:
+                with open(file_path, "r", encoding="utf-8") as file:
                     return json.load(file)
             elif file_type == XML_TYPE:
                 tree = ET.parse(file_path)
                 return tree.getroot()
             elif file_type == YAML_TYPE:
-                with open(file_path, 'r') as file:
+                with open(file_path, "r", encoding="utf-8") as file:
                     return yaml.safe_load(file)
             elif file_type == PROPERTIES_TYPE:
-                with open(file_path, 'r') as file:
+                with open(file_path, "r", encoding="utf-8") as file:
                     properties = {}
                     for line in file:
                         if line.strip() and not line.startswith("#"):
-                            key, value = line.strip().split('=', 1)
+                            key, value = line.strip().split("=", 1)
                             properties[key.strip()] = value.strip()
                     return properties
             else:
-                logging.error(f"Unsupported file type: {file_type}")
+                logging.error("Unsupported file type: %s", file_type)
                 return None
         except FileNotFoundError:
-            logging.error(f"{file_type.upper()} file not found: {file_path}")
+            logging.error("%s file not found: %s", file_type.upper(), file_path)
             return None
         except Exception as e:
-            logging.error(f"Error reading {file_type.upper()} file: {e}")
+            logging.error("Error reading %s file: %s", file_type.upper(), e)
             return None
 
     @staticmethod
@@ -46,16 +48,20 @@ class FileReaders:
         try:
             if file_type == PROPERTIES_TYPE:
                 return data[property_path]
-            else:
-                properties = property_path.split('.')
-                for prop in properties:
-                    if file_type == JSON_TYPE or file_type == YAML_TYPE:
-                        data = data[prop]
-                    elif file_type == XML_TYPE:
-                        data = data.find(prop)
-                return data.text if file_type == XML_TYPE and data is not None else data
+            properties = property_path.split(".")
+            for prop in properties:
+                if file_type in (JSON_TYPE, YAML_TYPE):
+                    data = data[prop]
+                elif file_type == XML_TYPE:
+                    data = data.find(prop)
+            return data.text if file_type == XML_TYPE and data is not None else data
         except (KeyError, TypeError, AttributeError) as e:
-            logging.error(f"Property '{property_path}' not found in the {file_type.upper()} data: {e}")
+            logging.error(
+                "Property %s not found in the %s data: %s",
+                property_path,
+                file_type.upper(),
+                e,
+            )
             return None
 
     @staticmethod
@@ -99,6 +105,7 @@ class FileReaders:
             return next(iter(properties_values.values()))
         else:
             return properties_values
+
 
 # Example usage:
 # Reading JSON file

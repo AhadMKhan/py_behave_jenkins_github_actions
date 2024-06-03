@@ -1,126 +1,132 @@
 import json
 import xml.etree.ElementTree as ET
-import yaml
 import logging
-from contextlib import contextmanager
-import os
+import yaml
 
 from Util_Factory.file_readers import FileReaders
 
 
 class FileWriter:
+
+    # pylint: disable=W0718
     @staticmethod
     def write_json(file_path, data):
         """Write JSON data to a file."""
         try:
-            with open(file_path, 'w') as file:
+            with open(file_path, "w", encoding="utf-8") as file:
                 json.dump(data, file, indent=4)
-            logging.info(f"JSON data successfully written to {file_path}")
+            logging.info("JSON data successfully written to %s", file_path)
         except Exception as e:
-            logging.error(f"Error writing JSON data to {file_path}: {e}")
+            logging.error("Error writing JSON data to %s: %s", file_path, e)
 
+    # pylint: disable=W0718
     @staticmethod
     def write_xml(file_path, data):
         """Write XML data to a file."""
         try:
             tree = ET.ElementTree(data)
-            tree.write(file_path, encoding='utf-8', xml_declaration=True)
-            logging.info(f"XML data successfully written to {file_path}")
+            tree.write(file_path, encoding="utf-8", xml_declaration=True)
+            logging.info("XML data successfully written to %s", file_path)
         except Exception as e:
-            logging.error(f"Error writing XML data to {file_path}: {e}")
+            logging.error("Error writing XML data to %s: %s", file_path, e)
 
     @staticmethod
     def write_yaml(file_path, data):
         """Write YAML data to a file."""
         try:
-            with open(file_path, 'w') as file:
+            with open(file_path, "w", encoding="utf-8") as file:
                 yaml.safe_dump(data, file)
-            logging.info(f"YAML data successfully written to {file_path}")
+            logging.info("YAML data successfully written to %s", file_path)
         except Exception as e:
-            logging.error(f"Error writing YAML data to {file_path}: {e}")
+            logging.error("Error writing YAML data to %s: %s", file_path, e)
 
     @staticmethod
     def write_properties(file_path, data):
         """Write properties data to a file."""
         try:
-            with open(file_path, 'w') as file:
+            with open(file_path, "w", encoding="utf-8") as file:
                 for key, value in data.items():
                     file.write(f"{key}={value}\n")
-            logging.info(f"Properties data successfully written to {file_path}")
+            logging.info("Properties data successfully written to %s", file_path)
         except Exception as e:
-            logging.error(f"Error writing properties data to {file_path}: {e}")
+            logging.error("Error writing properties data to %s: %s", file_path, e)
 
     @staticmethod
     def write_file(file_path, data, file_type):
         """Write data to a file based on its type."""
-        if file_type == 'json':
+        if file_type == "json":
             FileWriter.write_json(file_path, data)
-        elif file_type == 'xml':
+        elif file_type == "xml":
             FileWriter.write_xml(file_path, data)
-        elif file_type == 'yaml':
+        elif file_type == "yaml":
             FileWriter.write_yaml(file_path, data)
-        elif file_type == 'properties':
+        elif file_type == "properties":
             FileWriter.write_properties(file_path, data)
         else:
-            logging.error(f"Unsupported file type: {file_type}")
+            logging.error("Unsupported file type: %s", file_type)
 
     @staticmethod
     def set_property(data, property_path, value, file_type):
         """Set a property in the data structure."""
         try:
-            if file_type == 'properties':
+            if file_type == "properties":
                 data[property_path] = value
             else:
-                properties = property_path.split('.')
+                properties = property_path.split(".")
                 for prop in properties[:-1]:
-                    if file_type in ['json', 'yaml']:
+                    if file_type in ["json", "yaml"]:
                         data = data.setdefault(prop, {})
-                    elif file_type == 'xml':
+                    elif file_type == "xml":
                         found = data.find(prop)
                         if found is None:
                             found = ET.SubElement(data, prop)
                         data = found
                 last_prop = properties[-1]
-                if file_type in ['json', 'yaml']:
+                if file_type in ["json", "yaml"]:
                     data[last_prop] = value
-                elif file_type == 'xml':
+                elif file_type == "xml":
                     found = data.find(last_prop)
                     if found is None:
                         found = ET.SubElement(data, last_prop)
                     found.text = value
         except Exception as e:
-            logging.error(f"Error setting property '{property_path}' in {file_type.upper()} data: {e}")
+            logging.error(
+                "Error setting property %s in %s data: %s",
+                property_path,
+                file_type.upper(),
+                e,
+            )
 
     @staticmethod
     def set_json_property(file_path, property_path, value):
         """Set a property in a JSON file."""
-        data = FileReaders.read_file(file_path, 'json')
+        data = FileReaders.read_file(file_path, "json")
         if data is not None:
-            FileWriter.set_property(data, property_path, value, 'json')
+            FileWriter.set_property(data, property_path, value, "json")
             FileWriter.write_json(file_path, data)
 
     @staticmethod
     def set_xml_property(file_path, property_path, value):
         """Set a property in an XML file."""
-        data = FileReaders.read_file(file_path, 'xml')
+        data = FileReaders.read_file(file_path, "xml")
         if data is not None:
-            FileWriter.set_property(data, property_path, value, 'xml')
+            FileWriter.set_property(data, property_path, value, "xml")
             FileWriter.write_xml(file_path, data)
 
     @staticmethod
     def set_yaml_property(file_path, property_path, value):
         """Set a property in a YAML file."""
-        data = FileReaders.read_file(file_path, 'yaml')
+        data = FileReaders.read_file(file_path, "yaml")
         if data is not None:
-            FileWriter.set_property(data, property_path, value, 'yaml')
+            FileWriter.set_property(data, property_path, value, "yaml")
             FileWriter.write_yaml(file_path, data)
 
     @staticmethod
     def set_properties_property(file_path, property_path, value):
         """Set a property in a properties file."""
-        data = FileReaders.read_file(file_path, 'properties')
+        data = FileReaders.read_file(file_path, "properties")
         if data is not None:
-            FileWriter.set_property(data, property_path, value, 'properties')
+            FileWriter.set_property(data, property_path, value, "properties")
             FileWriter.write_properties(file_path, data)
 
 

@@ -60,10 +60,12 @@ class DatabaseFactory:
 
         existing_properties = {}
         if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                existing_properties = dict(line.strip().split('=') for line in f if '=' in line)
+            with open(file_path, "r", encoding="utf-8") as f:
+                existing_properties = dict(
+                    line.strip().split("=") for line in f if "=" in line
+                )
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             for idx, row in enumerate(results):
                 row_key = f"{main_key}.{idx + 1}" if len(results) > 1 else main_key
                 row_str = ", ".join(map(str, row))
@@ -84,49 +86,73 @@ class DatabaseFactory:
     def handle_query_parameters(query_parameters):
         if query_parameters.lower() == "none":
             return None
-        return query_parameters.split(', ')
+        return query_parameters.split(", ")
 
     @staticmethod
     def set_query_parameter(sql_query, properties_file_path=None, *query_params):
-        if not properties_file_path or properties_file_path.strip().lower() in {"none", "null", "", " "}:
-            if query_params and isinstance(query_params[0], list):
-                str_params = tuple(
-                    param for sublist in query_params for param in sublist if isinstance(param, str) and param.strip())
-            else:
-                str_params = tuple(param for param in query_params if isinstance(param, str) and param.strip())
-            # logging.info("String parameters: %s", str_params)
-            if "null" in [param.lower() for param in str_params]:
-                # logging.info("Null parameters provided, returning original query.")
-                return sql_query
-            if "none" in [param.lower() for param in str_params]:
-                # logging.info("None parameters provided, returning original query.")
-                return sql_query
-            return sql_query % str_params if str_params else sql_query
-        else:
-            try:
-                param_values = DatabaseFactory._fetch_param_values_from_properties(query_params, properties_file_path)
-            except FileNotFoundError:
-                logging.error("Properties file not found. Returning original query.")
-                return sql_query
-            if "null" in [param.lower() for param in param_values]:
-                # logging.info("Null parameters provided, returning original query.")
-                return sql_query
-            if "none" in [param.lower() for param in param_values]:
-                # logging.info("None parameters provided, returning original query.")
-                return sql_query
-            # logging.info("Parameter values from properties file: %s", param_values)
-            return sql_query % tuple(param_values)
+        # Handling case where properties_file_path is None or empty
+        if not properties_file_path or properties_file_path.strip().lower() in {
+            "none",
+            "null",
+            "",
+            " ",
+        }:
+            if query_params:
+                str_params = DatabaseFactory._get_string_params(query_params)
+                if "null" in (param.lower() for param in str_params) or "none" in (
+                    param.lower() for param in str_params
+                ):
+                    return sql_query
+                return sql_query % str_params if str_params else sql_query
+            return sql_query
+
+        # Handling case where properties_file_path is provided
+        try:
+            param_values = DatabaseFactory._fetch_param_values_from_properties(
+                query_params, properties_file_path
+            )
+        except FileNotFoundError:
+            logging.error("Properties file not found. Returning original query.")
+            return sql_query
+
+        if "null" in (param.lower() for param in param_values) or "none" in (
+            param.lower() for param in param_values
+        ):
+            return sql_query
+
+        return sql_query % tuple(param_values)
+
+    @staticmethod
+    def _get_string_params(query_params):
+        if query_params and isinstance(query_params[0], list):
+            return tuple(
+                param
+                for sublist in query_params
+                for param in sublist
+                if isinstance(param, str) and param.strip()
+            )
+        return tuple(
+            param for param in query_params if isinstance(param, str) and param.strip()
+        )
 
     @staticmethod
     def _fetch_param_values_from_properties(keys, properties_file_path):
         param_values = []
         for key in keys:
             if isinstance(key, (list, tuple)):
-                param_values.extend(DatabaseFactory._fetch_param_values_from_properties(key, properties_file_path))
+                param_values.extend(
+                    DatabaseFactory._fetch_param_values_from_properties(
+                        key, properties_file_path
+                    )
+                )
             elif key is not None:
                 value = FileReaders.get_properties_property(key, properties_file_path)
                 if value is None:
-                    DatabaseFactory.logger.error("Property '%s' not found in the PROPERTIES data", key)
-                    raise ValueError(f"Property '{key}' not found in the PROPERTIES data.")
+                    DatabaseFactory.logger.error(
+                        "Property '%s' not found in the PROPERTIES data", key
+                    )
+                    raise ValueError(
+                        f"Property '{key}' not found in the PROPERTIES data."
+                    )
                 param_values.append(value)
         return param_values

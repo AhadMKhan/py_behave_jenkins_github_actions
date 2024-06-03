@@ -1,0 +1,2 @@
+[tool.black]
+exclude = "test_results,.github,venv,code_rules,requirements.txt,README.md,pretty.output"
